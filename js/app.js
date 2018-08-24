@@ -2,12 +2,33 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var newNoteTitle = document.getElementById('new-note-title');
     var noteContentBox = document.getElementById('note-contents');
+    var saveAsButton = document.getElementById('save-as');
+
+    var loadFile = document.getElementById('loadFile');
+
 
     var idIndex = 0;
     var listNotes = [];
+    var JsonListNotes;
     var deleteIndexOf;
 
+    var loadedFile;
+    var isSaved = false;
+
     document.getElementById('cookie-print').onclick = getCookie;
+
+
+    window.onbeforeunload = function () {
+        if (isSaved) {
+            return;
+        }else{
+            return 'save work';
+        }
+    }
+
+    saveAsButton.addEventListener('click', saved(true));
+
+
 
     function noteElement(title, noteContent, id, activeNote) {
         return {
@@ -22,17 +43,6 @@ document.addEventListener('DOMContentLoaded', function () {
     ///////////////////////////////////////////////////////////////////////////
     ///////////////////////////// Event binding ///////////////////////////////
 
-    window.onload = function () {
-        //get cookie
-        var cookie = document.cookie;
-        console.log(cookie);
-
-        //Select cookie by name
-        //Split up cookie
-        //convert json into object using JSON.parse
-        //generate buttons for each object in array
-    }
-
 
     newNoteTitle.addEventListener('keyup', function () {
         if (event.key === 'Enter') {
@@ -42,17 +52,45 @@ document.addEventListener('DOMContentLoaded', function () {
 
     noteContentBox.addEventListener('blur', function (event) {
         //entered text value
-        console.log(event.target.value);
         var newTextValue = event.target.value;
 
         //get current value
         for (var i = 0; i < listNotes.length; i++) {
             if (listNotes[i].activeNote == true) {
-                console.log('condition met');
-                console.log(listNotes[i]);
                 listNotes[i].noteContent = newTextValue;
             }
         }
+    });
+
+
+
+    loadFile.addEventListener('click', function () {
+        var notesUpload = document.getElementById('fileUpload').files[0];
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            var result = reader.result;
+            var parsed = JSON.parse(result);
+            console.log(parsed);
+
+            loadedFile = parsed;
+        }
+        reader.readAsText(notesUpload);
+    });
+
+
+
+    saveAsButton.addEventListener('click', function () {
+        var json = JSON.stringify(listNotes),
+            blob = new Blob([json], {
+                type: "octet/stream"
+            }),
+            url = window.URL.createObjectURL(blob);
+
+        this.href = url;
+        this.target = '_blank';
+
+        this.download = 'my-download.json';
     });
 
 
@@ -76,14 +114,15 @@ document.addEventListener('DOMContentLoaded', function () {
         printArray();
     }
 
+
     //Display
     function createNoteButton() {
         //Selecting certain note to show content
         var noteButton = document.createElement('button');
 
-        if(newNoteTitle.value == ''){
+        if (newNoteTitle.value == '') {
             noteButton.innerHTML = 'New note' + idIndex;
-        }else{
+        } else {
             noteButton.innerHTML = newNoteTitle.value;
         }
         noteButton.className = 'note-element'
@@ -114,6 +153,8 @@ document.addEventListener('DOMContentLoaded', function () {
         //Cookie creation on note creation
         setCookie('User', convertToJson(listNotes), 7);
         idIndex++;
+
+        saved(false);
     }
 
 
@@ -121,7 +162,6 @@ document.addEventListener('DOMContentLoaded', function () {
         //loop to make all values false
         for (var i = 0; i < listNotes.length; i++) {
             listNotes[i].activeNote = false;
-            console.log(listNotes[i]);
         }
         //active to true
         buttonClickedId = e.target.getAttribute('data-id');
@@ -162,14 +202,19 @@ document.addEventListener('DOMContentLoaded', function () {
         var deleteId = e.target.getAttribute('data-id');
         deleteNoteArray(deleteId);
         deleteNoteButtons(deleteId);
+        printArray();
     }
 
     function printArray() {
         console.log(listNotes);
     }
 
+    function saved(value){
+        isSaved = value;
+    }
+
     //////////////////////////////////////////////////////////////////////////
-    ///////////////////////////// Cookie saving //////////////////////////////
+    ///////////////////////////// Data   saving //////////////////////////////
 
     function setCookie(cname, cvalue, exdays) {
         var d = new Date();
@@ -182,10 +227,6 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log(document.cookie);
     }
 
-    function deleteCookie(name) {
-        document.cookie = name + '=; Max-Age=-99999999'
-    }
-
     function convertToJson(object) {
         var json_str = JSON.stringify(object);
         return json_str;
@@ -195,5 +236,15 @@ document.addEventListener('DOMContentLoaded', function () {
         var object = JSON.parse(JsonValue);
         console.log(object);
     }
+
+
+    function readUpload() {
+        var notesUpload = document.getElementById('fileUpload').files[0];
+        //
+        var uploadedFileConversion = JsonToObject(notesUpload);
+
+        console.log(notesUpload);
+    }
+
 
 });
