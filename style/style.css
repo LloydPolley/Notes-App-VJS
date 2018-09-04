@@ -22,7 +22,7 @@
 }
 .notes-container .side-tab {
   flex-basis: 30%;
-  border: 1px solid grey;
+  border-right: 1px solid grey;
   overflow: scroll;
   height: 566px;
 }
@@ -35,22 +35,28 @@
   font-size: 150%;
   border: none;
   padding: 1em;
+  border: 1px solid grey;
+  border-radius: 5px;
 }
 .notes-container #side-container {
   display: flex;
   flex-wrap: wrap;
+  padding: 0.5em;
 }
-.notes-container #side-container .note-element {
+.notes-container #side-container .note-element-container {
+  width: 100%;
+  display: flex;
+}
+.notes-container #side-container .note-element-container .note-element {
   flex-basis: 85%;
   height: 50px;
-  background-color: #ffff2d;
+  border: none;
   border-bottom: 1px solid grey;
 }
-.notes-container #side-container .delete-element {
+.notes-container #side-container .note-element-container .delete-element {
   flex-basis: 15%;
   height: 50px;
   border: none;
-  background-color: #c90000;
   border-bottom: 1px solid grey;
 }
 .notes-container .note-section {

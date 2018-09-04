@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         this.href = url;
         this.target = '_blank';
-        this.download = 'my-download.json';
+        this.download = 'notes.json';
     });
 
     window.onbeforeunload = function () {
@@ -124,6 +124,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
     //Display buttons
     function createNoteButton(noteTitle, noteIndex, loaded) {
+
+        //////////////////////////////////////////
+        // New functionality nested buttons in div
+        var noteContainer = document.createElement('div');
+        noteContainer.className = 'note-element-container';
+        noteContainer.setAttribute('data-id', noteIndex);
+        document.getElementById('side-container').appendChild(noteContainer);
+        //////////////////////////////////////////
+
         //Selecting certain note to show content
         var noteButton = document.createElement('button');
 
@@ -136,15 +145,15 @@ document.addEventListener('DOMContentLoaded', function () {
         noteButton.className = 'note-element'
         noteButton.onclick = displayNote;
         noteButton.setAttribute('data-id', noteIndex);
-        document.getElementById('side-container').appendChild(noteButton);
+        document.getElementsByClassName('note-element-container')[idIndex].appendChild(noteButton);
 
         //Selecting certain note to show content
         var deleteButton = document.createElement('button');
         deleteButton.className = 'delete-element'
         deleteButton.onclick = deleteNote;
-        deleteButton.innerHTML = 'Del';
+        deleteButton.innerHTML = 'X';
         deleteButton.setAttribute('data-id', noteIndex);
-        document.getElementById('side-container').appendChild(deleteButton);
+        document.getElementsByClassName('note-element-container')[idIndex].appendChild(deleteButton);
     }
 
     //Runs both button methods 
@@ -200,6 +209,8 @@ document.addEventListener('DOMContentLoaded', function () {
     function deleteNoteButtons(deleteId) {
         var buttonNotes = document.querySelectorAll('.note-element');
         var buttonDelete = document.querySelectorAll('.delete-element');
+        var noteContainer = document.querySelectorAll('.note-element-container');
+        //noteContainer[deleteIndexOf].parentNode.removeChild(noteContainer[deleteIndexOf]);
         buttonNotes[deleteIndexOf].parentNode.removeChild(buttonNotes[deleteIndexOf]);
         buttonDelete[deleteIndexOf].parentNode.removeChild(buttonDelete[deleteIndexOf]);
     }
