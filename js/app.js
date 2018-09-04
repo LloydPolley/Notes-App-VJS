@@ -1,34 +1,19 @@
 document.addEventListener('DOMContentLoaded', function () {
 
+    //DOM elements
     var newNoteTitle = document.getElementById('new-note-title');
     var noteContentBox = document.getElementById('note-contents');
     var saveAsButton = document.getElementById('save-as');
-
     var loadFile = document.getElementById('loadFile');
 
 
+    //global variables
     var idIndex = 0;
     var listNotes = [];
     var JsonListNotes;
     var deleteIndexOf;
-
     var loadedFile;
     var isSaved = false;
-
-    document.getElementById('cookie-print').onclick = getCookie;
-
-
-    window.onbeforeunload = function () {
-        if (isSaved) {
-            return;
-        }else{
-            return 'save work';
-        }
-    }
-
-    saveAsButton.addEventListener('click', saved(true));
-
-
 
     function noteElement(title, noteContent, id, activeNote) {
         return {
@@ -39,10 +24,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-
     ///////////////////////////////////////////////////////////////////////////
     ///////////////////////////// Event binding ///////////////////////////////
-
 
     newNoteTitle.addEventListener('keyup', function () {
         if (event.key === 'Enter') {
@@ -63,7 +46,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 
-
     loadFile.addEventListener('click', function () {
         var notesUpload = document.getElementById('fileUpload').files[0];
         var reader = new FileReader();
@@ -72,13 +54,14 @@ document.addEventListener('DOMContentLoaded', function () {
             var result = reader.result;
             var parsed = JSON.parse(result);
             console.log(parsed);
+            var obValues = Object.values(parsed);
+            console.log(obValues.length);
+            loadedFile = obValues;
 
-            loadedFile = parsed;
+            loadedFileButtonGeneration();
         }
         reader.readAsText(notesUpload);
     });
-
-
 
     saveAsButton.addEventListener('click', function () {
         var json = JSON.stringify(listNotes),
@@ -89,45 +72,70 @@ document.addEventListener('DOMContentLoaded', function () {
 
         this.href = url;
         this.target = '_blank';
-
         this.download = 'my-download.json';
     });
 
+    window.onbeforeunload = function () {
+        if (isSaved) {
+            return;
+        } else {
+            return 'save work';
+        }
+    }
 
 
+    saveAsButton.addEventListener('click', saved(true));
 
     ///////////////////////////////////////////////////////////////////////////
     //////////////////////////// Core functions ///////////////////////////////
 
-    //Data
+
+    //Create buttons from loaded in file
+    function loadedFileButtonGeneration(){
+        console.log('Run');
+        for(var i = 0; i < loadedFile.length; i++){
+
+            createNoteButton(loadedFile[i].title, loadedFile[i].id, true);
+            var loadedNote = noteElement(loadedFile[i].title, loadedFile[i].noteContent, loadedFile[i].id, false);
+            console.log(loadedNote);
+            listNotes.push(loadedNote);
+            printArray();
+        }
+    }
+
+
+    //Data buttons
     function createNoteObject() {
         var noteTitle = document.getElementById('new-note-title').value;
         if (noteTitle == '') {
             noteTitle = 'New Note' + idIndex;
         }
+
         var content = document.getElementById('note-contents').value;
         var note = noteElement(noteTitle, content, idIndex, false);
 
         // adding objects to array
         listNotes.push(note);
 
+
         printArray();
     }
 
 
-    //Display
-    function createNoteButton() {
+    //Display buttons
+    function createNoteButton(noteTitle, noteIndex, loaded) {
         //Selecting certain note to show content
         var noteButton = document.createElement('button');
 
-        if (newNoteTitle.value == '') {
+        if (newNoteTitle.value == '' && loaded == false) {
             noteButton.innerHTML = 'New note' + idIndex;
         } else {
-            noteButton.innerHTML = newNoteTitle.value;
+            noteButton.innerHTML = noteTitle;
         }
+
         noteButton.className = 'note-element'
         noteButton.onclick = displayNote;
-        noteButton.setAttribute('data-id', idIndex);
+        noteButton.setAttribute('data-id', noteIndex);
         document.getElementById('side-container').appendChild(noteButton);
 
         //Selecting certain note to show content
@@ -135,14 +143,14 @@ document.addEventListener('DOMContentLoaded', function () {
         deleteButton.className = 'delete-element'
         deleteButton.onclick = deleteNote;
         deleteButton.innerHTML = 'Del';
-        deleteButton.setAttribute('data-id', idIndex);
+        deleteButton.setAttribute('data-id', noteIndex);
         document.getElementById('side-container').appendChild(deleteButton);
-
     }
 
-    function createNote() {
+    //Runs both button methods 
+    function createNote(title, id, loaded) {
         createNoteObject();
-        createNoteButton();
+        createNoteButton(newNoteTitle.value, idIndex, false);
 
         //Clear entries for next note
         (function clearEntrys() {
@@ -150,8 +158,6 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('new-note-title').value = '';
         }());
 
-        //Cookie creation on note creation
-        setCookie('User', convertToJson(listNotes), 7);
         idIndex++;
 
         saved(false);
@@ -209,42 +215,11 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log(listNotes);
     }
 
-    function saved(value){
+    function saved(value) {
         isSaved = value;
     }
 
     //////////////////////////////////////////////////////////////////////////
-    ///////////////////////////// Data   saving //////////////////////////////
-
-    function setCookie(cname, cvalue, exdays) {
-        var d = new Date();
-        d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
-        var expires = 'expires=' + d.toUTCString();
-        document.cookie = cname + '=' + cvalue + ';' + expires + ';path=/';
-    }
-
-    function getCookie(cname) {
-        console.log(document.cookie);
-    }
-
-    function convertToJson(object) {
-        var json_str = JSON.stringify(object);
-        return json_str;
-    }
-
-    function JsonToObject(JsonValue) {
-        var object = JSON.parse(JsonValue);
-        console.log(object);
-    }
-
-
-    function readUpload() {
-        var notesUpload = document.getElementById('fileUpload').files[0];
-        //
-        var uploadedFileConversion = JsonToObject(notesUpload);
-
-        console.log(notesUpload);
-    }
-
+    ///////////////////////////// Data saving ////////////////////////////////
 
 });

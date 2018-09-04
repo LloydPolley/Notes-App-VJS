@@ -1,7 +1,6 @@
 .notes-section {
   max-width: 1000px;
   margin: 0 auto;
-  border: 1px solid grey;
 }
 
 .notes-header {
@@ -10,11 +9,8 @@
   display: block;
 }
 .notes-header h1 {
+  border: 1px solid grey;
   text-align: center;
-}
-
-#delete-note {
-  border: 1px solid black;
 }
 
 .notes-container {
@@ -26,10 +22,12 @@
 }
 .notes-container .side-tab {
   flex-basis: 30%;
+  border: 1px solid grey;
+  overflow: scroll;
+  height: 566px;
 }
 .notes-container .side-tab .add-new-tab {
-  border: 1px solid;
-  height: 100px;
+  height: 68px;
 }
 .notes-container .side-tab .add-new-tab input {
   height: 100%;
@@ -45,16 +43,18 @@
 .notes-container #side-container .note-element {
   flex-basis: 85%;
   height: 50px;
-  border: 1px solid black;
+  background-color: #ffff2d;
+  border-bottom: 1px solid grey;
 }
 .notes-container #side-container .delete-element {
   flex-basis: 15%;
   height: 50px;
-  border: 1px solid black;
+  border: none;
+  background-color: #c90000;
+  border-bottom: 1px solid grey;
 }
 .notes-container .note-section {
   flex-basis: 70%;
-  border: 1px solid black;
 }
 .notes-container .note-section h2 {
   text-align: center;
@@ -65,7 +65,19 @@
   height: 500px;
   overflow: scroll;
   font-size: 125%;
-  border: none;
+  background-image: -webkit-linear-gradient(left, white 10px, transparent 10px), -webkit-linear-gradient(right, white 10px, transparent 10px), -webkit-linear-gradient(white 30px, #ccc 30px, #ccc 31px, white 31px);
+  background-image: -moz-linear-gradient(left, white 10px, transparent 10px), -moz-linear-gradient(right, white 10px, transparent 10px), -moz-linear-gradient(white 30px, #ccc 30px, #ccc 31px, white 31px);
+  background-image: -ms-linear-gradient(left, white 10px, transparent 10px), -ms-linear-gradient(right, white 10px, transparent 10px), -ms-linear-gradient(white 30px, #ccc 30px, #ccc 31px, white 31px);
+  background-image: -o-linear-gradient(left, white 10px, transparent 10px), -o-linear-gradient(right, white 10px, transparent 10px), -o-linear-gradient(white 30px, #ccc 30px, #ccc 31px, white 31px);
+  background-image: linear-gradient(left, white 10px, transparent 10px), linear-gradient(right, white 10px, transparent 10px), linear-gradient(white 30px, #ccc 30px, #ccc 31px, white 31px);
+  background-size: 100% 100%, 100% 100%, 100% 31px;
+  border: 1px solid #ccc;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  line-height: 20px;
+  padding: 5px;
+}
+.notes-container #delete-note {
+  border: 1px solid black;
 }
 
 /*# sourceMappingURL=style.css.map */
