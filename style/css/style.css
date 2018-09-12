@@ -1,42 +1,48 @@
-.notes-section {
-  max-width: 1000px;
-  margin: 0 auto;
+body {
+  margin: 0;
 }
 
-.notes-header {
-  display: flex;
-  width: 100%;
-  display: block;
+#notes-folder-section {
+  position: relative;
+  overflow: scroll;
+  color: white;
+  background-color: #494949;
+  height: 100%;
+  width: 160px;
+  position: fixed;
 }
-.notes-header h1 {
-  border: 1px solid grey;
-  text-align: center;
+
+#notes-section {
+  left: 160px;
+  overflow: scroll;
+  color: white;
+  height: 100%;
+  width: 160px;
+  position: fixed;
+}
+#notes-section input {
+  border: none;
+  padding: 1em;
+}
+#notes-section .note-element-container {
+  display: flex;
+}
+#notes-section .note-element-container .note-element {
+  border: none;
+  flex-basis: 80%;
+}
+#notes-section .note-element-container .delete-element {
+  border: none;
+  flex-basis: 20%;
 }
 
 .notes-container {
   display: flex;
   flex-direction: row;
+  margin-left: 320px;
 }
 .notes-container #new-note-button {
   display: none;
-}
-.notes-container .side-tab {
-  flex-basis: 30%;
-  border-right: 1px solid grey;
-  overflow: scroll;
-  height: 566px;
-}
-.notes-container .side-tab .add-new-tab {
-  height: 68px;
-}
-.notes-container .side-tab .add-new-tab input {
-  height: 100%;
-  width: 100%;
-  font-size: 150%;
-  border: none;
-  padding: 1em;
-  border: 1px solid grey;
-  border-radius: 5px;
 }
 .notes-container #side-container {
   display: flex;
@@ -46,6 +52,7 @@
 .notes-container #side-container .note-element-container {
   width: 100%;
   display: flex;
+  animation: slide-up 0.4s ease;
 }
 .notes-container #side-container .note-element-container .note-element {
   flex-basis: 85%;
@@ -59,13 +66,13 @@
   border: none;
   border-bottom: 1px solid grey;
 }
-.notes-container .note-section {
+.notes-container .note-textarea {
   flex-basis: 70%;
 }
-.notes-container .note-section h2 {
+.notes-container .note-textarea h2 {
   text-align: center;
 }
-.notes-container .note-section textarea {
+.notes-container .note-textarea textarea {
   padding: 1em;
   width: 100%;
   height: 500px;
@@ -84,6 +91,21 @@
 }
 .notes-container #delete-note {
   border: 1px solid black;
+}
+
+@keyframes slide-up {
+  0% {
+    opacity: 0;
+    transform: translateY(0px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+#clearLocal {
+  position: absolute;
+  bottom: 0;
 }
 
 /*# sourceMappingURL=style.css.map */

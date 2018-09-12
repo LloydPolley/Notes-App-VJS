@@ -1,0 +1,12 @@
+body{
+    margin: 0;
+}
+#notes-folder-section{
+    position: relative;
+    overflow: scroll;
+    color: white;
+    background-color: rgb(73, 73, 73);
+    height: 100%;
+    width: 160px;
+    position: fixed;
+}

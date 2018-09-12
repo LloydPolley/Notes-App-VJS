@@ -1,0 +1,28 @@
+#notes-section {
+    left: 160px;
+    overflow: scroll;
+    color: white; 
+    height: 100%;
+    width: 160px;
+    position: fixed;
+
+    input {
+        border: none;
+        padding: 1em;
+    }
+
+    .note-element-container{
+        display: flex;
+
+        .note-element{
+            border: none;
+            flex-basis: 80%;
+        }
+        .delete-element{
+            border:none;
+            flex-basis: 20%;
+        }
+    }
+
+}
+

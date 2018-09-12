@@ -3,17 +3,22 @@ document.addEventListener('DOMContentLoaded', function () {
     //DOM elements
     var newNoteTitle = document.getElementById('new-note-title');
     var noteContentBox = document.getElementById('note-contents');
-    var saveAsButton = document.getElementById('save-as');
-    var loadFile = document.getElementById('loadFile');
 
 
     //global variables
     var idIndex = 0;
     var listNotes = [];
-    var JsonListNotes;
     var deleteIndexOf;
-    var loadedFile;
-    var isSaved = false;
+
+ 
+    (function () {
+        if (localStorage.getItem('User1')) {
+            getLocal('User1');
+        } else {
+            console.log('No user');
+        }
+    }());
+
 
     function noteElement(title, noteContent, id, activeNote) {
         return {
@@ -45,64 +50,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-
-    loadFile.addEventListener('click', function () {
-        var notesUpload = document.getElementById('fileUpload').files[0];
-        var reader = new FileReader();
-
-        reader.onload = function (e) {
-            var result = reader.result;
-            var parsed = JSON.parse(result);
-            console.log(parsed);
-            var obValues = Object.values(parsed);
-            console.log(obValues.length);
-            loadedFile = obValues;
-
-            loadedFileButtonGeneration();
-        }
-        reader.readAsText(notesUpload);
-    });
-
-    saveAsButton.addEventListener('click', function () {
-        var json = JSON.stringify(listNotes),
-            blob = new Blob([json], {
-                type: "octet/stream"
-            }),
-            url = window.URL.createObjectURL(blob);
-
-        this.href = url;
-        this.target = '_blank';
-        this.download = 'notes.json';
-    });
-
-    window.onbeforeunload = function () {
-        if (isSaved) {
-            return;
-        } else {
-            return 'save work';
-        }
-    }
-
-
-    saveAsButton.addEventListener('click', saved(true));
-
     ///////////////////////////////////////////////////////////////////////////
     //////////////////////////// Core functions ///////////////////////////////
-
-
-    //Create buttons from loaded in file
-    function loadedFileButtonGeneration(){
-        console.log('Run');
-        for(var i = 0; i < loadedFile.length; i++){
-
-            createNoteButton(loadedFile[i].title, loadedFile[i].id, true);
-            var loadedNote = noteElement(loadedFile[i].title, loadedFile[i].noteContent, loadedFile[i].id, false);
-            console.log(loadedNote);
-            listNotes.push(loadedNote);
-            printArray();
-        }
-    }
-
 
     //Data buttons
     function createNoteObject() {
@@ -116,23 +65,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // adding objects to array
         listNotes.push(note);
-
-
         printArray();
+    }
+
+    function createButtonDiv() {
+
+        // New functionality nested buttons in div
+        var noteContainer = document.createElement('div');
+        noteContainer.className = 'note-element-container';
+        noteContainer.setAttribute('data-id', idIndex);
+        document.getElementById('side-container').appendChild(noteContainer);
+        //////////////////////////////////////////
     }
 
 
     //Display buttons
-    function createNoteButton(noteTitle, noteIndex, loaded) {
-
-        //////////////////////////////////////////
-        // New functionality nested buttons in div
-        var noteContainer = document.createElement('div');
-        noteContainer.className = 'note-element-container';
-        noteContainer.setAttribute('data-id', noteIndex);
-        document.getElementById('side-container').appendChild(noteContainer);
-        //////////////////////////////////////////
-
+    function createNoteButton(noteTitle, loaded) {
         //Selecting certain note to show content
         var noteButton = document.createElement('button');
 
@@ -144,22 +92,29 @@ document.addEventListener('DOMContentLoaded', function () {
 
         noteButton.className = 'note-element'
         noteButton.onclick = displayNote;
-        noteButton.setAttribute('data-id', noteIndex);
+        noteButton.setAttribute('data-id', idIndex);
         document.getElementsByClassName('note-element-container')[idIndex].appendChild(noteButton);
 
+
+    }
+
+    function createNoteDelete() {
         //Selecting certain note to show content
         var deleteButton = document.createElement('button');
         deleteButton.className = 'delete-element'
         deleteButton.onclick = deleteNote;
         deleteButton.innerHTML = 'X';
-        deleteButton.setAttribute('data-id', noteIndex);
+        deleteButton.setAttribute('data-id', idIndex);
         document.getElementsByClassName('note-element-container')[idIndex].appendChild(deleteButton);
     }
 
     //Runs both button methods 
-    function createNote(title, id, loaded) {
+    function createNote() {
         createNoteObject();
-        createNoteButton(newNoteTitle.value, idIndex, false);
+
+        createButtonDiv();
+        createNoteButton(newNoteTitle.value, false);
+        createNoteDelete();
 
         //Clear entries for next note
         (function clearEntrys() {
@@ -170,6 +125,7 @@ document.addEventListener('DOMContentLoaded', function () {
         idIndex++;
 
         saved(false);
+        localSaving('User1', listNotes);
     }
 
 
@@ -184,7 +140,7 @@ document.addEventListener('DOMContentLoaded', function () {
         for (var i = 0; i < listNotes.length; i++) {
             if (listNotes[i].id == buttonClickedId) {
                 document.getElementById('note-contents').value = listNotes[i].noteContent;
-                document.getElementById('new-title').innerHTML = listNotes[i].title;
+                document.getElementById('note-title').innerHTML = listNotes[i].title;
                 listNotes[i].activeNote = true;
                 noteContentBox.focus();
             }
@@ -204,6 +160,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
         }
+        localSaving('User1', listNotes);
     }
 
     function deleteNoteButtons(deleteId) {
@@ -232,5 +189,42 @@ document.addEventListener('DOMContentLoaded', function () {
 
     //////////////////////////////////////////////////////////////////////////
     ///////////////////////////// Data saving ////////////////////////////////
+
+    var clearButton = document.getElementById('clearLocal');
+
+    clearButton.addEventListener('click', function () {
+        localStorage.clear();
+    });
+
+    function localSaving(user, jsonFile) {
+        localStorage.setItem(user, JSON.stringify(jsonFile));
+    }
+
+    function getLocal(user) {
+        var localSaved = localStorage.getItem(user);
+
+        //convert string into Json object
+        listNotes = JSON.parse(localSaved);
+
+        loadedFileButtonGeneration();
+    }
+
+    //Create buttons from loaded in file
+    function loadedFileButtonGeneration() {
+        for (var i = 0; i < listNotes.length; i++) {
+
+            //Change ids back in order
+            listNotes[i].id = idIndex;
+            listNotes[i].activeNote = false;
+
+            createButtonDiv();
+            createNoteButton(listNotes[i].title, true);
+            createNoteDelete();
+            
+            //Iterate each button creation
+            idIndex++;
+        }
+        console.log(listNotes);
+    }
 
 });

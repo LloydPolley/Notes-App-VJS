@@ -1,34 +1,30 @@
 <head>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="/style/style.css">
+    <link rel="stylesheet" href="/style/css/style.css">
 
 
 </head>
 
 <body onload="">
-    <section class="notes-section">
-        <div class="notes-container">
-            <div class="side-tab">
-                <div class="add-new-tab">
-                    <input placeholder="New Note" id="new-note-title" required>
-                </div>
-                <div id="side-container">
-                </div>
-            </div>
-            <div class="note-section">
-                <h2 id="new-title">title</h2>
-                <textarea id="note-contents" placeholder="Enter text here" required></textarea>
-            </div>
-        </div>
-        <a id="save-as" href="#">Save as</a>
-        <input type="file" id="fileUpload">
-        <button id="loadFile">Load</button>
-        <div>
-
-        </div>
-
+    <section id="notes-folder-section">
+        <button id="clearLocal">Delete Notes</button>
+        <h2>Note folders</h2>
     </section>
+
+    <section id="notes-section">
+        <input placeholder="New Note" id="new-note-title" required>
+        <div id="side-container">
+        </div>
+    </section>
+
+    <section class="notes-container">
+        <div class="note-textarea">
+            <h2 id="note-title">title</h2>
+            <textarea id="note-contents" placeholder="Enter text here" required></textarea>
+        </div>
+    </section>
+
 
 
 
